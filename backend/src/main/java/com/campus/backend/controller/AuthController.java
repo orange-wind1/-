@@ -16,6 +16,7 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         
         // 简单的账号密码硬编码校验 (供后续模块联调使用)
+        // TODO:下一阶段需连接 MySQL 数据库进行真实用户表数据校验
         if ("admin".equals(request.getUsername()) && "123456".equals(request.getPassword())) {
             String token = JwtUtils.generateToken(request.getUsername());
             
