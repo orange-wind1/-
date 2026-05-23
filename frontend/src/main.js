@@ -1,4 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router' // 引入路由配置
 
-createApp(App).mount('#app')
+const app = createApp(App)
+
+app.use(router) // 让应用使用路由功能
+app.mount('#app')
