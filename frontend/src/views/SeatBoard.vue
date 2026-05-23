@@ -23,6 +23,18 @@
       </div>
     </el-card>
   </div>
+
+  <div class="seat-board">
+    <div class="matrix">
+      <div 
+        v-for="seat in 25" 
+        :key="seat" 
+        class="seat-item"
+        @click="handleReserve(seat)"  >
+        座位 {{ seat }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -44,6 +56,20 @@ const fetchSeatStatus = async () => {
   }
 }
 
+const handleReserve = async (seatId) => {
+  // 这里编写发送 POST 请求的逻辑
+  try {
+    const response = await fetch('http://localhost:8080/api/seats/reserve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ seatId: seatId })
+    });
+    const data = await response.json();
+    alert(data.message);
+  } catch (error) {
+    alert("请求失败，请检查后端是否启动");
+  }
+}
 onMounted(() => {
   fetchSeatStatus()
 })
@@ -95,6 +121,7 @@ onMounted(() => {
   color: white;
   font-weight: bold;
   transition: transform 0.2s;
+  cursor: pointer;
 }
 .seat-item:hover {
   transform: scale(1.05);

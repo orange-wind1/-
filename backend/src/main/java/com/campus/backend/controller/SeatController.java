@@ -32,4 +32,19 @@ public class SeatController {
         }
         return seats;
     }
+    @PostMapping("/seats/reserve")
+    public Map<String, Object> reserveSeat(@RequestBody Map<String, Integer> request) {
+        Integer seatId = request.get("seatId");
+        Map<String, Object> response = new HashMap<>();
+        
+        // 新的预约逻辑
+        if (seatId != null && seatId > 20) {
+            response.put("code", 400);
+            response.put("message", "很遗憾，该座位已被抢占");
+        } else {
+            response.put("code", 200);
+            response.put("message", "座位 " + seatId + " 预约成功！");
+        }
+        return response;
+    }
 }
