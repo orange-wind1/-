@@ -4,11 +4,23 @@
     <div v-if="list.length === 0" class="empty">暂无活跃预约</div>
     <div v-else class="res-list">
       <div v-for="item in list" :key="item.id" class="res-item">
-        <span>🪑 座位号: {{ item.seatId }} 号</span> | 
-        <span>⏰ 时间: {{ item.time }}</span> | 
-        <span class="status">{{ item.status }}</span>
-        <button @click="handleCancel(item.id)" class="cancel-btn">取消预约</button>
-      </div>
+  <span>🪑 座位号: {{ item.seatId }} 号</span> | 
+  <span>⏰ 时间: {{ item.time }}</span> | 
+  
+  <span :class="{'status-active': item.status === '使用中 (已签到)', 'status': item.status !== '使用中 (已签到)'}">
+    {{ item.status }}
+  </span>
+  
+  <button 
+    v-if="item.status === '预约成功'" 
+    @click="handleCheckIn(item.id)" 
+    class="checkin-btn"
+  >
+    📍 立即签到
+  </button>
+  
+  <button @click="handleCancel(item.id)" class="cancel-btn">取消预约</button>
+</div>
     </div>
   </div>
 </template>
@@ -48,6 +60,26 @@ const handleCancel = async (id) => {
   }
 }
 
+// 新增：签到逻辑处理
+const handleCheckIn = async (id) => {
+  try {
+    const response = await fetch('http://localhost:8080/api/reservations/check-in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id })
+    })
+    const data = await response.json()
+    if (data.code === 200) {
+      alert("✅ " + data.message)
+      fetchReservations() // 签到成功后，重新调用拉取接口刷新页面状态
+    } else {
+      alert("⚠️ " + data.message)
+    }
+  } catch (error) {
+    alert('签到请求失败，请检查网络或后端服务')
+  }
+}
+
 onMounted(() => {
   fetchReservations()
 })
@@ -59,4 +91,20 @@ onMounted(() => {
 .status { color: #409eff; font-weight: bold; }
 .cancel-btn { background: #f56c6c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 .cancel-btn:hover { background: #dd6161; }
+.checkin-btn { 
+  background: #67c23a; 
+  color: white; 
+  border: none; 
+  padding: 5px 10px; 
+  border-radius: 4px; 
+  cursor: pointer; 
+  margin-right: 10px; 
+}
+.checkin-btn:hover { 
+  background: #85ce61; 
+}
+.status-active { 
+  color: #67c23a; 
+  font-weight: bold; 
+}
 </style>

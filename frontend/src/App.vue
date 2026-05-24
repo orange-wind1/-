@@ -9,6 +9,18 @@
 import SeatBoard from './views/SeatBoard.vue'
 </script>
 
+<template>
+  <div class="app-container">
+    <SeatBoard />
+    <MyReservations /> 
+  </div>
+</template>
+
+<script setup>
+import SeatBoard from './views/SeatBoard.vue'
+import MyReservations from './views/MyReservations.vue' // 👈 引入新组建
+</script>
+
 <style>
 body {
   margin: 0;
